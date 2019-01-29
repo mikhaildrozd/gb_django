@@ -1,0 +1,14 @@
+<ul class="links-menu">
+        <li>
+            <a href="{%  url 'product_list' %}">
+                Все продукты
+            </a>
+        </li>
+    {% for link in categories %}
+        <li>
+            <a href="{{ link.get_absolute_url }}">
+                {{ link.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
