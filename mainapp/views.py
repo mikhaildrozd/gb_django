@@ -43,25 +43,42 @@ def contact(request: HttpRequest):
 
 def products(request, category_slug=None):
     category = None
-    categories = Category.objects.all()
+    links_menu = Category.objects.all()
     products = Product.objects.filter(available=True)
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=category)
-
+    # print(links_menu)
     return render(request,
                   'mainapp/products.html',
                   {'category': category,
-                   'categories': categories,
+                   'links_menu': links_menu,
                    'products': products})
 
-def product_detail(request, id, slug,):
-    categories = Category.objects.all()
+def product_detail(request, slug):
+    links_menu = Category.objects.all()
     product = get_object_or_404(Product,
-                                id=id,
                                 slug=slug,
                                 available=True)
 
     return render(request, 'mainapp/product.html', {'product': product,
-                                                    'categories': categories,
+                                                    'links_menu': links_menu,
                                                     })
+
+
+# def get_referer_view(request, default=None):
+#     '''
+#     Return the referer view of the current request
+#
+#     Example:
+#
+#         def some_view(request):
+#             ...
+#             referer_view = get_referer_view(request)
+#             return HttpResponseRedirect(referer_view, '/accounts/login/')
+#     '''
+#
+#     # if the user typed the url directly in the browser's address bar
+#     referer = request.META.get('HTTP_REFERER')
+#     if not referer:
+#         return default

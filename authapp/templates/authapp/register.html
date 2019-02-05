@@ -1,0 +1,12 @@
+{% extends 'authapp/base.html' %}
+
+{% block content %}
+    <form action="{% url 'auth:register' %}" method="post">
+        {% csrf_token %}
+        {{ reg_form.as_p }}
+
+        <p>
+            <input type="submit" value="регистрация">
+        </p>
+    </form>
+{% endblock %}
