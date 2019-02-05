@@ -46,13 +46,7 @@ class ShopUserRegisterForm(UserCreationForm):
     #         raise forms.ValidationError("Размер фотографии слишком большой")
 
 
-    def clean_age(self):
-        data = self.cleaned_data['age']
-        # print(data)
-        if data < 18:
-            raise forms.ValidationError("Вы слишком молоды!")
-
-        return data
+    
 
 
 
@@ -79,9 +73,4 @@ class ShopUserUpdateForm(UserChangeForm):
     #         raise forms.ValidationError("Размер фотографии слишком большой")
     #     return avatar
 
-    def clean_age(self):
-        data = self.cleaned_data['age']
-        if data < 18:
-            raise forms.ValidationError("Вы слишком молоды!")
-
-        return data
+  
