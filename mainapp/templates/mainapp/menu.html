@@ -34,3 +34,11 @@
         {% endif %}
     </li>
 </ul>
+<a href="{% url 'basket:index' %}" class="basket">
+    <span>
+        {% if basket %}
+            {{ basket.0.total_quantity}} товаров <br>
+        {% endif %}
+    </span>
+</a>
+

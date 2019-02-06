@@ -2,12 +2,17 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, HttpResponse
 import datetime
 from .models import Category, Product
+from basketapp.models import Basket
 
 # Create your views here.
 
 def undex(request: HttpRequest):
+    products = Product.objects.all()
 
-    return render(request, 'mainapp/index.html')
+    return render(request, 'mainapp/index.html',{
+        'products': products,
+        'basket': get_current_basket(request.user)
+    })
 
 
 def contact(request: HttpRequest):
@@ -41,28 +46,34 @@ def contact(request: HttpRequest):
         'locations': locations
     })
 
+def get_current_basket(current_user):
+    basket = Basket.objects.filter(user=current_user) if current_user.is_authenticated else None
+
+    return basket
+
 def products(request, category_slug=None):
-    category = None
     links_menu = Category.objects.all()
-    products = Product.objects.filter(available=True)
-    if category_slug:
-        category = get_object_or_404(Category, slug=category_slug)
-        products = products.filter(category=category)
-    # print(links_menu)
+    products = Product.objects.filter(category__slug=category_slug) if category_slug else Product.objects.all()
+    category = get_object_or_404(Category, slug=category_slug) if category_slug else None
+
     return render(request,
                   'mainapp/products.html',
                   {'category': category,
                    'links_menu': links_menu,
-                   'products': products})
+                   'products': products,
+                   'basket': get_current_basket(request.user)
+                   })
 
-def product_detail(request, slug):
+def product_detail(request, slug=None):
     links_menu = Category.objects.all()
-    product = get_object_or_404(Product,
-                                slug=slug,
-                                available=True)
-
+    product = get_object_or_404(Product, slug=slug)
+    products = Product.objects.exclude(slug=slug).filter(category__slug=product.category.slug)
     return render(request, 'mainapp/product.html', {'product': product,
                                                     'links_menu': links_menu,
+                                                    'title': f'Товар: {product.name}',
+                                                    'products': products,
+                                                    'basket': get_current_basket(request.user)
+
                                                     })
 
 

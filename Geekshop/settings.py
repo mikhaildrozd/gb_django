@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mainapp',
     'authapp',
-    'phonenumber_field'
+    'phonenumber_field',
+    'basketapp',
 ]
 
 MIDDLEWARE = [
