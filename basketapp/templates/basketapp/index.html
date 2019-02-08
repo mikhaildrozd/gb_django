@@ -1,0 +1,29 @@
+{% extends 'mainapp/layout.html' %}
+
+
+{% block content %}
+
+    {% if products %}
+    <ul>
+    {% for item in products %}
+        {% if item.quantity > 0 %}
+        <li>
+            <p>{{ item.product.name }}</p>
+            <b>Стоимость -  {{ item.product.price }} (Общая -
+                <span class="basket-item-price">{{ item.product_price }})</span></b> <br>
+            <b>Количество - <span class="basket-item-quantity">{{ item.quantity }}</span></b>
+
+            <button class="basket-item-add" data-id="{{ item.product_id}}">Добавить</button>
+            <button class="basket-item-delete" data-id="{{ item.product_id  }}" data-slug="{{ item.product_slug }}">Удалить</button>
+            <br>
+
+            <a href="{% url 'basket:delete_product' id=item.id %}">Удалить</a>
+        </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+    {% else %}
+    <h2>Товаров пока нет</h2>
+    {% endif %}
+
+{% endblock %}>
