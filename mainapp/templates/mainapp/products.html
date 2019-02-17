@@ -1,6 +1,6 @@
 {% extends 'mainapp/layout.html' %}
 
-{% load static %}
+{% load staticfiles %}
 
 {% block menu %}
 <div class="hero-white">
@@ -10,7 +10,7 @@
         {% include 'mainapp/menu.html' %}
 
         <a href="#" class="search"></a>
-        <a href="#" class="basket"></a>
+{#        <a href="#" class="basket"></a>#}
     </div>
 </div>
 {% endblock %}
@@ -21,10 +21,29 @@
         {% include 'mainapp/categories_menu.html' %}
     </div>
 
+            <div class="title clearfix">
+
+                <ul>
+                    {% if provider.has_previous %}
+                        <li>
+                            <a href="{% url 'products:page' page=provider.previous_page_number %}">Prev</a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        page #{{ provider.number }} of {{ provider.paginator.num_pages }}
+                    </li>
+                    {% if provider.has_next %}
+                        <li>
+                            <a href="{% url 'products:page' page=provider.next_page_number %}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
     <div  >
     <h1>{% if category %}{{ category.name }}{% else %}Все продукты{% endif %}</h1>
     <div class="items row">
-      {% for product in products %}
+      {% for product in provider %}
         <div >
           <a href="{{ product.get_absolute_url }}">
             <img src="{% if product.image %}{{ product.image.url }}{% endif %}" >
@@ -38,5 +57,5 @@
 
 
 <div class="clr"></div>
-
+</div>
 {% endblock %}

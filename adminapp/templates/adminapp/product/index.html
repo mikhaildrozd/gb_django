@@ -1,0 +1,70 @@
+{% extends 'adminapp/base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="products_list">
+		<button class="new_product">
+			<a href={% url 'admin:product_create'%}>новый продукт</a>
+		</button>
+        <br>
+
+		{% for object in object_list %}
+            {% if object.available %}
+                <b>Активные товары</b>
+			<div class="product_record ">
+				<img src="/media/{{ object.image|default:'products_images/default.jpg' }}" alt="{{ object.name }}">
+				<div class="product_name">
+					{{ object.name|title }}
+				</div>
+				<div class="product_actions">
+					<button>
+						<a href={% url 'admin:product_read' object.pk %}>подробнее</a>
+					</button>
+					<button>
+						<a href={% url 'admin:product_update' object.pk %}>редактировать</a>
+					</button>
+					<button>
+						<a href={% url 'admin:product_delete' object.pk %}>удалить</a>
+					</button>
+{#                    {% if object.available %}#}
+                    <button>
+						<a href="{{ object.get_absolute_url }}" >Просмотр товара на сайте</a>
+					</button>
+{#                    {% endif %}#}
+				</div>
+				<div class="summary">
+					<b>цена</b>
+					<p>{{ object.price }} руб</p>
+					<b>количество</b>
+					<p>{{ object.stock }}</p>
+				</div>
+				<div class="product_desc">
+					{{ object.short_desc|title }}
+				</div>
+			</div>
+		{% endif %}
+        {% endfor%}
+    <b>неактивные товары</b>
+
+        {% for object in object_list %}
+            {% if not object.available %}
+            <div class="product_record ">
+				<img src="/media/{{ object.image|default:'products_images/default.jpg' }}" alt="{{ object.name }}">
+				<div class="product_name">
+					{{ object.name|title }}
+				</div>
+				<div class="product_actions">
+					<button>
+						<a href={% url 'admin:product_read' object.pk %}>подробнее</a>
+					</button>
+					<button>
+						<a href={% url 'admin:product_update' object.pk %}>редактировать</a>
+					</button>
+				</div>
+
+			</div>
+        {% endif %}
+        {% endfor%}
+	</div>
+{% endblock %}

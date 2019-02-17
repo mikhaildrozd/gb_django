@@ -3,6 +3,9 @@
 {% block content %}
     <form action="{% url 'auth:register' %}" method="post">
         {% csrf_token %}
+{#        {% if request.GET.next %}#}
+{#        <input type="hidden" name="next" value="{{ request.GET.next }}">#}
+{#        {% endif %}#}
         {{ reg_form.as_p }}
 
         <p>

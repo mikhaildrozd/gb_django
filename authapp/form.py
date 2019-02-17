@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django import forms
 from authapp.models import ShopUser
-from phonenumber_field.formfields import PhoneNumberField
+# from phonenumber_field.formfields import PhoneNumberField
 import os
 
 class ShopUserLoginForm(AuthenticationForm):
@@ -16,16 +16,13 @@ class ShopUserLoginForm(AuthenticationForm):
 
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-        # phone = PhoneNumberField()
 
 
 class ShopUserRegisterForm(UserCreationForm):
-    # phone = PhoneNumberField(widget=forms.TextInput(attrs={'placeholder': ('Phone')}),
-    #
-    #                          label=("Phone number"), required=False)
+
     class Meta:
         model = ShopUser
-        fields = ('username', 'first_name', 'age', 'password1', 'password2', 'email', 'avatar', 'sity', 'phone')
+        fields = ('username', 'first_name', 'age', 'password1', 'password2', 'email', 'avatar', 'sity', )
         # unique_together = ('email',)
 
     def __init__(self, *args, **kwargs):

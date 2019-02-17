@@ -3,24 +3,28 @@ from django.http import HttpRequest, HttpResponse
 from .form import ShopUserLoginForm, ShopUserRegisterForm, ShopUserUpdateForm
 from django.contrib import auth
 from django.urls import reverse
+from django.utils.datastructures import MultiValueDictKeyError
 
 def login(request: HttpRequest):
     title = 'войти на сайт'
 
     # создать форму для заполнения
-    login_form = ShopUserLoginForm(data=request.POST)
+    login_form = ShopUserLoginForm(data=request.POST or None)
 
     # проверить данные из request
     if request.method == 'POST' and login_form.is_valid():
         login = request.POST['username']
         password = request.POST['password']
-
+        # try:
+        next_url = request.POST.get('next') or '/'
+        # except MultiValueDictKeyError:
+        #     next_url = '/'
         # выполнить аутентификацию
         user = auth.authenticate(username=login, password=password)
 
         if user and user.is_active:
             auth.login(request, user)
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(next_url)
 
     content = {
         'title': title,

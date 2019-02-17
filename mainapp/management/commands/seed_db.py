@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 from mainapp.models import Product, Category
-# from django.contrib.auth.models import User
-# from authapp.models import CustomUser, ShopUser
+# from django.contrib.auth.forms import User
+# from authapp.forms import CustomUser, ShopUser
 from django.template.defaultfilters import slugify
 from unidecode import unidecode
 

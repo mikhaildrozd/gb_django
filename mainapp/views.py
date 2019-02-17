@@ -2,12 +2,19 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, HttpResponse
 import datetime
 from .models import Category, Product
+from basketapp.models import Basket
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 # Create your views here.
 
 def undex(request: HttpRequest):
+    products = Product.objects.all()
 
-    return render(request, 'mainapp/index.html')
+    return render(request, 'mainapp/index.html', {
+        'products': products,
+        'basket': get_current_basket(request.user)
+    })
 
 
 def contact(request: HttpRequest):
@@ -41,30 +48,52 @@ def contact(request: HttpRequest):
         'locations': locations
     })
 
-def products(request, category_slug=None):
-    category = None
-    links_menu = Category.objects.all()
-    products = Product.objects.filter(available=True)
-    if category_slug:
-        category = get_object_or_404(Category, slug=category_slug)
-        products = products.filter(category=category)
-    # print(links_menu)
+
+def get_current_basket(current_user):
+    basket = Basket.objects.filter(user=current_user) if current_user.is_authenticated else None
+
+    return basket
+
+
+def products(request, category_slug=None, page=1):
+    title = 'продукты'
+    links_menu = Category.objects.filter(is_valid=True)
+    products = Product.objects.filter(category__slug=category_slug,
+                                      available=True) if category_slug else Product.objects.filter(available=True,
+                                                                                                   category__is_valid=True)
+    category = get_object_or_404(Category, slug=category_slug,is_valid=True) if category_slug else None
+
+    provider = Paginator(products, 1)
+
+    try:
+        products_provider = provider.page(page)
+    except PageNotAnInteger:
+        products_provider = provider.page(1)
+    except EmptyPage:
+        products_provider = provider.page(provider.num_pages)
+
+
     return render(request,
                   'mainapp/products.html',
-                  {'category': category,
+                  {'title':title,
+                   'category': category,
                    'links_menu': links_menu,
-                   'products': products})
+                   'provider': products_provider,
+                   'basket': get_current_basket(request.user)
+                   })
 
-def product_detail(request, slug):
-    links_menu = Category.objects.all()
-    product = get_object_or_404(Product,
-                                slug=slug,
-                                available=True)
 
+def product_detail(request, slug=None):
+    links_menu = Category.objects.filter(is_valid=True)
+    product = get_object_or_404(Product, slug=slug, available=True, category__is_valid=True, )
+    products = Product.objects.exclude(slug=slug).filter(category__slug=product.category.slug, available=True,
+                                                         category__is_valid=True, )
     return render(request, 'mainapp/product.html', {'product': product,
                                                     'links_menu': links_menu,
+                                                    'title': f'Товар: {product.name}',
+                                                    'products': products,
+                                                    'basket': get_current_basket(request.user)
                                                     })
-
 
 # def get_referer_view(request, default=None):
 #     '''

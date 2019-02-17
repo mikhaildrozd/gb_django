@@ -3,8 +3,10 @@
 {% block content %}
     <form action="{% url 'auth:login' %}" method="post">
         {% csrf_token %}
+        {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% endif %}
         {{ login_form.as_p }}
-
         <p>
             <input type="submit" value="попробовать">
         </p>

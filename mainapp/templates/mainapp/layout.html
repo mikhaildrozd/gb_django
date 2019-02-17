@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load static %}
+{% load staticfiles %}
 <html>
 <head>
     <meta charset="utf-8">
@@ -10,12 +10,10 @@
     </title>
 
     {% block css %}
-        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.css' %}">
     {% endblock %}
 
-    {% block js %}
-    {% endblock %}
 </head>
 <body>
 <div class="container">
@@ -61,6 +59,12 @@
         <p class="small">Положения &amp; Условия / Конфиденциальность &amp; Cookies</p>
     </div>
 {% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/basket.js' %}"></script>
+{% endblock %}
+
 
 </body>
 </html>
