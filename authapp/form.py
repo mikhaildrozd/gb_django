@@ -3,6 +3,7 @@ from django import forms
 from authapp.models import ShopUser
 # from phonenumber_field.formfields import PhoneNumberField
 import os
+import random, hashlib
 
 class ShopUserLoginForm(AuthenticationForm):
 
@@ -31,6 +32,18 @@ class ShopUserRegisterForm(UserCreationForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             field.help_text = ''
+
+    def save(self, commit=True):
+        user = super(ShopUserRegisterForm, self).save()
+
+        user.is_active = False
+        salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:6]
+        user.activation_key = hashlib.sha1((user.email + salt).encode('utf8')).hexdigest()
+        user.save()
+
+        return user
+
+
 
 
 

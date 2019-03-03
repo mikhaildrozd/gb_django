@@ -29,7 +29,6 @@ def create(request: HttpRequest):
     return render(request,'adminapp/categories/update.html', {'form': form})
 
 
-
 @user_passes_test(lambda user: user.is_superuser)
 def update(request: HttpRequest, id):
     model = get_object_or_404(Category, pk=id)

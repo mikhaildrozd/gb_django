@@ -9,7 +9,7 @@ from mainapp.models import Product
 
 @method_decorator(user_passes_test(lambda u: u.is_superuser), name='dispatch')
 class ProductsListView(ListView):
-    model = Product
+    # model = Product
     template_name = 'adminapp/product/index.html'
 
     def get_queryset(self):

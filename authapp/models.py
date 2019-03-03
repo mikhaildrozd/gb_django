@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # from phonenumber_field.modelfields import PhoneNumberField
 from django.core.exceptions import ValidationError
-
+from django.utils.timezone import now
+from datetime import timedelta
 
 
 
@@ -17,8 +18,19 @@ class ShopUser(AbstractUser):
     avatar = models.ImageField(upload_to='users_avatars', blank=True, verbose_name='Аватар', validators=[validate_image])
     sity = models.CharField(max_length=40, db_index=True, blank=True, verbose_name="Город")
     # phone = PhoneNumberField(null=False, blank=False, unique=True, verbose_name="Телефон")
+    activation_key = models.CharField(max_length=128, blank=True)
+    activation_key_expires = models.DateTimeField(default=(now() + timedelta(hours=48)))
+
+    def is_activatioin_key_expires(self):
+        if now() <= self.activation_key_expires:
+            return False
+        else:
+            return True
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
         unique_together = ('email',)
+
+
+

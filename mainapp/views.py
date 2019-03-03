@@ -13,7 +13,6 @@ def undex(request: HttpRequest):
 
     return render(request, 'mainapp/index.html', {
         'products': products,
-        'basket': get_current_basket(request.user)
     })
 
 
@@ -49,10 +48,10 @@ def contact(request: HttpRequest):
     })
 
 
-def get_current_basket(current_user):
-    basket = Basket.objects.filter(user=current_user) if current_user.is_authenticated else None
-
-    return basket
+# def get_current_basket(current_user):
+#     basket = Basket.objects.filter(user=current_user) if current_user.is_authenticated else None
+#
+#     return basket
 
 
 def products(request, category_slug=None, page=1):
@@ -79,7 +78,6 @@ def products(request, category_slug=None, page=1):
                    'category': category,
                    'links_menu': links_menu,
                    'provider': products_provider,
-                   'basket': get_current_basket(request.user)
                    })
 
 
@@ -92,7 +90,6 @@ def product_detail(request, slug=None):
                                                     'links_menu': links_menu,
                                                     'title': f'Товар: {product.name}',
                                                     'products': products,
-                                                    'basket': get_current_basket(request.user)
                                                     })
 
 # def get_referer_view(request, default=None):
