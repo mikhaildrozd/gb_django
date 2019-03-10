@@ -14,13 +14,14 @@ def login(request: HttpRequest):
 
     # создать форму для заполнения
     login_form = ShopUserLoginForm(data=request.POST or None)
+    next = request.GET['next'] if 'next' in request.GET.keys() else ''
 
     # проверить данные из request
     if request.method == 'POST' and login_form.is_valid():
         login = request.POST['username']
         password = request.POST['password']
         # try:
-        next_url = request.POST.get('next') or '/'
+        # next_url = request.POST.get('next') or '/'
         # except MultiValueDictKeyError:
         #     next_url = '/'
         # выполнить аутентификацию
@@ -28,11 +29,15 @@ def login(request: HttpRequest):
 
         if user and user.is_active:
             auth.login(request, user)
-            return HttpResponseRedirect(next_url)
+            if 'next' in request.POST.keys():
+                return HttpResponseRedirect(request.POST['next'])
+            else:
+                return HttpResponseRedirect(reverse('main'))
 
     content = {
         'title': title,
-        'login_form': login_form
+        'login_form': login_form,
+        'next': next
     }
     return render(request, 'authapp/login.html', content)
 
@@ -111,7 +116,8 @@ def send_verify_mail(user):
             fail_silently=False,
         )
 
-def verify(request, email, activation_key):
+def verify(request:HttpRequest, email, activation_key):
+
     try:
         user = ShopUser.objects.get(email=email)
         if user.activation_key == activation_key and not user.is_activation_key_expired():
@@ -126,6 +132,6 @@ def verify(request, email, activation_key):
             return render(request, 'authapp/verification.html')
 
     except Exception as e:
-        print(f'error activation user : {e.args}')
+        print(f'error activation user : {e.args}0000')
 
     return HttpResponseRedirect(reverse('main'))

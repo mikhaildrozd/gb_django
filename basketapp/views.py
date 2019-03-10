@@ -22,7 +22,7 @@ def add(request: HttpRequest, id: int):
 
     if request.is_ajax():
         return JsonResponse({
-            'quantity': Basket.objects.get(product__id=id).quantity
+            'quantity': Basket.objects.get(product__id=id, user=request.user).quantity
         })
 
     if 'login' in request.META.get('HTTP_REFERER'):
@@ -30,9 +30,9 @@ def add(request: HttpRequest, id: int):
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-@login_required()
-def remove(request: HttpRequest, id:int, ):
 
+@login_required()
+def remove(request: HttpRequest, id: int, ):
     # print(item)
 
     exists_item = Basket.objects.filter(product__id=id, user=request.user)  # user_id
@@ -41,11 +41,16 @@ def remove(request: HttpRequest, id:int, ):
         exists_item[0].quantity -= 1
         exists_item[0].save()
 
+    if request.is_ajax():
+        return JsonResponse({
+            'quantity': Basket.objects.get(product__id=id, user=request.user).quantity
+        })
+
     return JsonResponse({'quantity': Basket.objects.get(product__id=id).quantity})
 
 
 @login_required()
-def delete_product(request: HttpRequest,id:int):
+def delete_product(request: HttpRequest, id: int):
     item = get_object_or_404(Basket, pk=id)
     item.delete()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
